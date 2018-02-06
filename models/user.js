@@ -6,70 +6,15 @@ const Schema   = mongoose.Schema;                 // Assign Mongoose Schema func
 const bcrypt   = require('bcrypt-nodejs');        // Import Bcrypt Package
 const titlize  = require('mongoose-title-case');  // Import Mongoose Title Case Plugin
 const validate = require('mongoose-validator');   // Import Mongoose Validator Plugin
+const vali     = require('./validate');
 
-// User Name Validator
-const nameValidator = [
-    validate({
-        validator: 'matches',
-        arguments: /^(([a-zA-Z]{3,50})+$/,
-        message: 'Name must be at least 3 characters, max 50, no special characters or numbers.'
-    }),
-    validate({
-        validator: 'isLength',
-        arguments: [3, 50],
-        message  :  'Name should be between {ARGS[0]} and {ARGS[1]} characters'
-    })
-];
-
-// User E-mail Validator
-const emailValidator = [
-    validate({
-        validator: 'matches',
-        arguments: /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$/,
-        message: 'Name must be at least 3 characters, max 50, no special characters or numbers, must have space in between name.'
-    }),
-    validate({
-        validator: 'isLength',
-        arguments: [3, 50],
-        message: 'Email should be between {ARGS[0]} and {ARGS[1]} characters'
-    })
-];
-
-// User Phone Validator
-const phoneValidator = [
-    validate({
-        validator: 'matches',
-        arguments: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-        message  : 'Not a correct phone number'
-    }),
-    validate({
-        validator: 'isLength',
-        arguments: [8, 13],
-        message: 'Phone number should be between {ARGS[0]} and {ARGS[1]} characters'
-    })
-];
-
-
-// Password Validator
-const passwordValidator = [
-    validate({
-        validator: 'matches',
-        arguments: /^(?=.*?[\d]).{8,35}$/,
-        message: 'Password needs to have at least one number and must be at least 8 characters but no more than 35.'
-    }),
-    validate({
-        validator: 'isLength',
-        arguments: [8, 35],
-        message: 'Password should be between {ARGS[0]} and {ARGS[1]} characters'
-    })
-];
 
 // User Mongoose Schema
 const UserSchema = new Schema({
-    name            :    { type: String,  required: true, validate: nameValidator },
-    password        :    { type: String,  required: true, validate: passwordValidator, select: false },
-    email           :    { type: String,  required: true, validate: emailValidator   , unique: true },
-    phonenum        :    { type: String,  required: true, validate: phoneValidator },
+    name            :    { type: String,  required: true, validate: vali.nameValidator },
+    password        :    { type: String,  required: true, validate: vali.passwordValidator, select: false },
+    email           :    { type: String,  required: true, validate: vali.emailValidator   , unique: true },
+    phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
     permission      :    { type: Boolean, required: true, default: false },
     temporarytoken  :    { type: String,  required: true },
     qrcode          :    { type: String,  required: true },

@@ -8,7 +8,7 @@ const helmet            = require('helmet');
 const mongoose          = require('mongoose');
 const router            = express.Router();                 // Invoke the Express Router
 const appRoutes         = require('./routes/api')(router);  // Import the application end points/API
-const port              = process.env.PORT || 8000;         // Set default port or assign a port in environment
+const port              = process.env.PORT || 8800;         // Set default port or assign a port in environment
 const app               = express();
 
 
