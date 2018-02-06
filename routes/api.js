@@ -86,5 +86,52 @@ module.exports = function(router) {
             });
         }
     });
+
+    // Route for user logins
+    router.post('/authenticate', function(req, res) {
+        const loginUser = (req.body.username).toLowerCase(); // Ensure username is checked in lowercase against database
+        User.findOne({ username: loginUser }).select('email password').exec(function(err, user) {
+            if (err) {
+                // Create an e-mail object that contains the error. Set to automatically send it to myself for troubleshooting.
+                var email = {
+                    from: 'IEEE_VIT',
+                    to: ['abhilashg179@gmail.com'],
+                    subject: 'ERROR',
+                    text: 'Hello this error '+err,
+                    html: 'Hello this error '+err
+                };
+                // Function to send e-mail to myself
+                client.sendMail(email, function(err, info) {
+                    if (err) {
+                        console.log(err); // If error with sending e-mail, log to console/terminal
+                    } else {
+                        console.log(info); // Log success message to console if sent
+                    }
+                });
+                res.json({ success: false, message: 'Something went wrong. This error has been logged and will be addressed by our IEEE team. We apologize for this inconvenience!' });
+            } else {
+                // Check if user is found in the database (based on username)
+                if (!user) {
+                    res.json({ success: false, message: 'Username not found' }); // Username not found in database
+                } else if (user) {
+                    // Check if user does exist, then compare password provided by user
+                    if (!req.body.password) {
+                        res.json({ success: false, message: 'No password provided' }); // Password was not provided
+                    }
+                    else {
+                        var validPassword = user.comparePassword(req.body.password); // Check if password matches password provided by user
+                        if (!validPassword) {
+                            res.json({ success: false, message: 'Could not authenticate, password invalid ' }); // Password does not match password in database
+                        } else {
+                            var token = jwt.sign({ username: user.username, email: user.email }, secret); // Logged in: Give user token
+                            res.json({ success: true, message: 'User authenticated!', token: token });    // Return token in JSON object to controller
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+
     return router; // Return the router object to server
 };

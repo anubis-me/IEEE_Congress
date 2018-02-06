@@ -30,7 +30,7 @@ const phoneValidator = [
     validate({
         validator: 'isLength',
         arguments: [8, 13],
-        message: 'Password should be between {ARGS[0]} and {ARGS[1]} characters'
+        message: 'Phone number should be between {ARGS[0]} and {ARGS[1]} characters'
     })
 ];
 
