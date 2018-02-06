@@ -56,7 +56,9 @@ const UserSchema = new Schema({
     email           :    { type: String,  required: true, validate: emailValidator   , unique: true },
     permission      :    { type: Boolean, required: true, default: false },
     temporarytoken  :    { type: String,  required: true },
-    organization    :    { type: String,  required: true }
+    qrcode          :    { type: String,  required: true },
+    food            :    { type: String,  required: true },
+    wifi            :    { type: String,  required: true }
 });
 
 // Middleware to ensure password is encrypted before saving user to database
