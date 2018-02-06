@@ -54,6 +54,7 @@ const UserSchema = new Schema({
     name            :    { type: String,  required: true, validate: nameValidator },
     password        :    { type: String,  required: true, validate: passwordValidator, select: false },
     email           :    { type: String,  required: true, validate: emailValidator   , unique: true },
+    phonenum        :    { type: String,  required: true, validate: phoneValidator },
     permission      :    { type: Boolean, required: true, default: false },
     temporarytoken  :    { type: String,  required: true },
     qrcode          :    { type: String,  required: true },
