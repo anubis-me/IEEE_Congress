@@ -1,0 +1,21 @@
+{
+  "name": "ieee_congress",
+  "version": "1.0.0",
+  "description": "Backend for Ios and Android app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Abhinav gupta",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.1",
+    "express": "^4.16.2",
+    "express-validator": "^4.3.0",
+    "helmet": "^3.10.0",
+    "mongoose": "^5.0.3",
+    "morgan": "^1.9.0"
+  }
+}
