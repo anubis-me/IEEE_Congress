@@ -2,7 +2,7 @@
  * Created by abhi on 07-Feb-18.
  */
 const mongoose = require('mongoose');             // Import Mongoose Package
-const Schema   = mongoose.Schema;                 // Assign Mongoose Schema function to constiable
+const Schema   = mongoose.Schema;                 // Assign Mongoose Schema function
 const bcrypt   = require('bcrypt-nodejs');        // Import Bcrypt Package
 const titlize  = require('mongoose-title-case');  // Import Mongoose Title Case Plugin
 const validate = require('mongoose-validator');   // Import Mongoose Validator Plugin
@@ -34,6 +34,21 @@ const emailValidator = [
         message: 'Email should be between {ARGS[0]} and {ARGS[1]} characters'
     })
 ];
+
+// User Phone Validator
+const phoneValidator = [
+    validate({
+        validator: 'matches',
+        arguments: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+        message  : 'Not a correct phone number'
+    }),
+    validate({
+        validator: 'isLength',
+        arguments: [8, 13],
+        message: 'Password should be between {ARGS[0]} and {ARGS[1]} characters'
+    })
+];
+
 
 // Password Validator
 const passwordValidator = [
