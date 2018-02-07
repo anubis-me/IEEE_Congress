@@ -12,8 +12,8 @@ module.exports = function(router) {
     // Start Sendgrid
     var options = {
         auth: {
-            api_user: 'namansurana',
-            api_key:  'namansur1'
+            api_user: process.env.DB_USER ,
+            api_key:process.env.DB_PASS
         }
     };
 

@@ -8,11 +8,12 @@ const helmet            = require('helmet');
 const mongoose          = require('mongoose');
 const router            = express.Router();                 // Invoke the Express Router
 const appRoutes         = require('./routes/api')(router);  // Import the application end points/API
-const port              = process.env.PORT || 8800;         // Set default port or assign a port in environment
+const port              = process.env.PORT || 4000;         // Set default port or assign a port in environment
 const app               = express();
 
+require('dotenv').config();
 
-mongoose.connect('mongodb://abhi:1234@ds131742.mlab.com:31742/mean', function(err) {
+mongoose.connect(process.env.DB_HOST, function(err) {
 
     if (err) {
         console.log('Not connected to the database: ' + err); // Log to console if unable to connect to database
