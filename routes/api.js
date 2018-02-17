@@ -24,15 +24,14 @@ module.exports = function(router) {
     // Route to register new users
     router.post('/reguser', function(req, res) {
         var user          = new User();          // Create new User object
-        user.permission   = req.body.permission; // Save permission from request to User object
+        user.appid        = req.body.appid;
         user.password     = req.body.password;   // Save password from request to User object
         user.email        = req.body.email;      // Save email from request to User object
-        user.name         = req.body.name;       // Save name from request to User object
-        user.phonenum     = req.body.name;       // Save phone number from request to User object
-        user.temporarytoken = jwt.sign({ username: user.username, email: user.email }, secret); // Create a token for activating account through e-mail
-
+        user.username     = req.body.username;   // Save name from request to User object
+        user.phonenum     = req.body.phonenum;   // Save phone number from request to User object
+        user.qrcode       = jwt.sign({ username: user.username, email: user.email }, secret);
         // Check if request is valid and not empty or null
-        if (req.body.name === null || req.body.name === '' || req.body.password === null || req.body.password === '' || req.body.email === null || req.body.email === '' || req.body.permission === null || req.body.permission === ''|| req.body.phonenum === null || req.body.phonenum === '') {
+        if (req.body.username === null || req.body.username === '' || req.body.password === null || req.body.password === '' || req.body.email === null || req.body.email === '' || req.body.permission === null || req.body.permission === ''|| req.body.phonenum === null || req.body.phonenum === '') {
             res.json({ success: false, message: 'Ensure username, email, and password were provided' });
         } else {
             // Save new user to database
@@ -41,12 +40,8 @@ module.exports = function(router) {
                     // Check if any validation errors exists (from user model)
                     if (err.errors !== null)
                     {
-                        if (err.errors.name) {
-                            res.json({ success: false, message: err.errors.name.message }); // Display error in validation (name)
-                        } else if (err.errors.email) {
+                        if (err.errors.email)    {
                             res.json({ success: false, message: err.errors.email.message }); // Display error in validation (email)
-                        } else if (err.errors.username) {
-                            res.json({ success: false, message: err.errors.phonenum.message }); // Display error in validation (username)
                         } else if (err.errors.password) {
                             res.json({ success: false, message: err.errors.password.message }); // Display error in validation (password)
                         } else {
@@ -69,8 +64,8 @@ module.exports = function(router) {
                         from:  'IEEE_VIT',
                         to: [user.email,  'abhilashg179@gmail.com'],
                         subject: 'Your Account is activated',
-                        text: 'Hello ' + user.name + ', thank you for registering at IEEE_Conference. ',
-                        html: 'Hello<strong> ' + user.name + '</strong>,<br><br>Thank you for registering at IEEE_Conference'
+                        text: 'Hello ' + user.username + ', thank you for registering at IEEE_Conference. ',
+                        html: 'Hello<strong> ' + user.username + '</strong>,<br><br>Thank you for registering at IEEE_Conference'
                     };
                     // Function to send e-mail to the user
                     client.sendMail(email, function(err, info) {
@@ -89,8 +84,8 @@ module.exports = function(router) {
 
     // Route for user logins
     router.post('/authenticate', function(req, res) {
-        const loginUser = (req.body.username).toLowerCase(); // Ensure username is checked in lowercase against database
-        User.findOne({ username: loginUser }).select('email password').exec(function(err, user) {
+        const loginUser = (req.body.email).toLowerCase(); // Ensure username is checked in lowercase against database
+        User.findOne({ email: loginUser }).select('email password username qrcode phonenum permission').exec(function(err, user) {
             if (err) {
                 // Create an e-mail object that contains the error. Set to automatically send it to myself for troubleshooting.
                 var email = {
@@ -123,7 +118,7 @@ module.exports = function(router) {
                         if (!validPassword) {
                             res.json({ success: false, message: 'Could not authenticate, password invalid ' }); // Password does not match password in database
                         } else {
-                            var token = jwt.sign({ username: user.username, email: user.email }, secret); // Logged in: Give user token
+                            var token = jwt.sign({ username: user.username, email: user.email, phonenum:user.phonenum, permission:user.permission, qrcode:user.qrcode }, secret); // Create a token for activating account through e-mail
                             res.json({ success: true, message: 'User authenticated!', token: token });    // Return token in JSON object to controller
                         }
                     }

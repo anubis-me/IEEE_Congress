@@ -4,22 +4,21 @@
 const mongoose = require('mongoose');             // Import Mongoose Package
 const Schema   = mongoose.Schema;                 // Assign Mongoose Schema function
 const bcrypt   = require('bcrypt-nodejs');        // Import Bcrypt Package
-const titlize  = require('mongoose-title-case');  // Import Mongoose Title Case Plugin
 const validate = require('mongoose-validator');   // Import Mongoose Validator Plugin
 const vali     = require('./validate');
 
 
 // User Mongoose Schema
 const UserSchema = new Schema({
-    name            :    { type: String,  required: true, validate: vali.nameValidator },
-    password        :    { type: String,  required: true, validate: vali.passwordValidator, select: false },
-    email           :    { type: String,  required: true, validate: vali.emailValidator   , unique: true },
+    appid           :    { type: String },
+    username        :    { type: String,  required: true },
+    password        :    { type: String,  required: true, select: false },
+    email           :    { type: String,  required: true, validate: vali.emailValidator  },
     phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
-    permission      :    { type: Boolean, required: true, default: false },
-    temporarytoken  :    { type: String,  required: true },
+    permission      :    { type: Boolean, default: false },
     qrcode          :    { type: String,  required: true },
-    food            :    { type: String,  required: true },
-    wifi            :    { type: String,  required: true }
+    food            :    { type: String,  required: false },
+    wifi            :    { type: String}
 });
 
 // Middleware to ensure password is encrypted before saving user to database
@@ -35,10 +34,6 @@ UserSchema.pre('save', function(next) {
     });
 });
 
-// Mongoose Plugin to change fields to title case after saved to database (ensures consistency)
-UserSchema.plugin(titlize, {
-    paths: ['name']
-});
 
 // Method to compare passwords in API (when user logs in)
 UserSchema.methods.comparePassword = function(password) {
