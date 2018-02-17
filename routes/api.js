@@ -85,7 +85,7 @@ module.exports = function(router) {
     // Route for user logins
     router.post('/authenticate', function(req, res) {
         const loginUser = (req.body.email).toLowerCase(); // Ensure username is checked in lowercase against database
-        User.findOne({ email: loginUser }).select('email password username qrcode phonenum permission').exec(function(err, user) {
+        User.findOne({ email: loginUser }).select('email password username qrcode phonenum permission appid').exec(function(err, user) {
             if (err) {
                 // Create an e-mail object that contains the error. Set to automatically send it to myself for troubleshooting.
                 var email = {
@@ -118,7 +118,7 @@ module.exports = function(router) {
                         if (!validPassword) {
                             res.json({ success: false, message: 'Could not authenticate, password invalid ' }); // Password does not match password in database
                         } else {
-                            var token = jwt.sign({ username: user.username, email: user.email, phonenum:user.phonenum, permission:user.permission, qrcode:user.qrcode }, secret); // Create a token for activating account through e-mail
+                            var token = jwt.sign({ username: user.username, email: user.email, phonenum:user.phonenum, permission:user.permission, qrcode:user.qrcode, appid:user.appid }, secret); // Create a token for activating account through e-mail
                             res.json({ success: true, message: 'User authenticated!', token: token });    // Return token in JSON object to controller
                         }
                     }
