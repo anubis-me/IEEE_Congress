@@ -14,7 +14,7 @@ For SignUp
 For login
 - /api/authenticate : Data required (email, password)
 - Response : { success: true, message: 'User authenticated!', token: token }
-token : username, email, phonenum, permission, qrcode, appid
+- token : username, email, phonenum, permission, qrcode, appid
 
 For activating wifi coupon
 - /api/activate : Data required (qrcode,uappid)
