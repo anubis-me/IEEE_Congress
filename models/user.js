@@ -17,24 +17,23 @@ const UserSchema = new Schema({
     phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
     permission      :    { type: Boolean, default: false },
     qrcode          :    { type: String },
-    food            :    { type: String,  required: false },
-    wifi            :    { type: String}
+    food            :    [{type:String}],
+    wifi            :    { type: String},
+    isAdmin         :    { type: Boolean, default:false} // false, if the user is a normal user and true, if the user is admin
 });
 
-// Middleware to ensure password is encrypted before saving user to database
-UserSchema.pre('save', function(next) {
-    const user = this;
-
-    // Function to encrypt password
-    bcrypt.hash(user.password, null, null, function(err, hash) {
-        if (err)
-            return next(err);   // Exit if error is found
-        user.password = hash;   // Assign the hash to the user's password so it is saved in database encrypted
-        next();                 // Exit Bcrypt function
+// Hashing the password of the user before saving into the database
+UserSchema.pre('save', function(next){
+    bcrypt.hash(user.password, null, null, function(err, hash){
+        if (err){
+            return next(err);
+        }
+        user.password = hash;
+        next();
     });
 });
 
-// Adding object ID of the user as the qr code
+// Adding object ID of the user as the qr code after the user is saved
 UserSchema.post('save', function(next) {
     const user = this;
     user.qrcode = user._id;

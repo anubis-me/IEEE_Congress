@@ -26,8 +26,9 @@ For speaker
 - /api/speaker : Data required (appid)
 
 For Food Coupon
-- /api/foodc : Data required (qrcode,uappid,fooddetail)
-
+- /api/breakfast : Data required (qrcode,uappid)
+- /api/lunch : Data required (qrcode,uappid)
+- /api/dinner : Data required (qrcode,uappid)
 
 appid: user app id   ,
 uappid: moderator app id

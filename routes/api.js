@@ -5,6 +5,7 @@ var User            = require('../models/user');    // Import User Model
 var Coupon          = require('../models/wifi_coupon'); // Import Wifi coupon model
 var jwt             = require('jsonwebtoken');      // Import JWT Package
 var secret          = 'harrypotterfdrtynbvrt';      // Create custom secret for use in JWT
+var bcrypt          = require('bcrypt-nodejs');
 var nodemailer      = require('nodemailer');        // Import Nodemailer Package
 var sgTransport     = require('nodemailer-sendgrid-transport'); // Import Nodemailer Sengrid Transport Package
 
@@ -30,12 +31,13 @@ module.exports = function(router) {
         user.email        = req.body.email;      // Save email from request to User object
         user.username     = req.body.username;   // Save name from request to User object
         user.phonenum     = req.body.phonenum;   // Save phone number from request to User object
+        user.qrcode       = req.body.appid;
         //user.qrcode       = jwt.sign({ username: user.username, email: user.email }, secret);
         // Check if request is valid and not empty or null
         if (req.body.username === null || req.body.username === '' || req.body.password === null || req.body.password === '' || req.body.email === null || req.body.email === '' || req.body.permission === null || req.body.permission === ''|| req.body.phonenum === null || req.body.phonenum === '') {
             res.json({ success: false, message: 'Ensure username, email, and password were provided' });
         } else {
-            // Save new user to database
+            // Saving the new user to database
             user.save(function(err) {
                 if (err) {
                     // Check if any validation errors exists (from user model)
@@ -62,6 +64,7 @@ module.exports = function(router) {
                         }
                     }
                 } else {
+
                     // Create e-mail object to send to user
                     var email = {
                         from:  'IEEE_VIT',
@@ -152,33 +155,105 @@ module.exports = function(router) {
     // The coupon will be in the user object like => wifi: <couponCode> <couponPassword>
     router.post('/activate', function(req, res){
         var qrcode = req.body.qrcode;
-        Coupon.find({}).exec(function(err, coupons){
-            if (len(coupons) <= 0){
-                res.json({success: false, message: "No more wifi coupons available"});
+        var modId = req.body.uappid; //Moderator app id
+
+        // Checking the if the person who is activating the wifi coupon is moderator or not
+        User.findOne({appid: modId}).exec(function(err, output){
+            if (err){
+                console.log(err);
+                res.json({success: false, message: "An error occurred"});
             } else {
-                var coupon = coupons[0];
-                User.findOneAndUpdate({qrcode: qrcode}, {wifi: coupon.couponId + " " + coupon.couponPassword}).exec(function(err, outputUser){
-                    if (err){
-                        console.log(err);
-                        res.json({success: false, message: "An error occurred"});
+                if (!output){
+                    res.json({success: false, message: "No such moderator exists"});
+                } else {
+                    if (output.isAdmin == false)
+                        res.json({success: false, message: "The moderator doesn't have admin privileges"});
+                    else {
+                        Coupon.find({}).exec(function(err, coupons){
+                            if (len(coupons) <= 0){
+                                res.json({success: false, message: "No more wifi coupons available"});
+                            } else {
+                                var coupon = coupons[0];
+                                User.findOneAndUpdate({qrcode: qrcode}, {wifi: coupon.couponId + " " + coupon.couponPassword}).exec(function(err, outputUser){
+                                    if (err){
+                                        console.log(err);
+                                        res.json({success: false, message: "An error occurred"});
+                                    } else {
+                                        if (!outputUser){
+                                            res.json({success: false, message: "No such user exists"});
+                                        } else {
+                                            // Removing that coupon from the coupons collection because that coupon is no longer availableto other users
+                                            Coupon.findOneAndRemove({_id: coupon._id}).exec(function(err){
+                                                if (err){
+                                                    console.log(err);
+                                                    res.json({success: false, message: "Error occurred while activating the coupon"});
+                                                } else {
+                                                    res.json({success: true, message: "Wifi coupon activated", coupon:outputUser.wifi});
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    });
+
+    //Routes for user to take meals
+    /** route = breakfast, to make the user eat breakfast **/
+    /** route = lunch, to make the user eat lunch **/
+    /** route = dinner, to make the user eat dinner **/
+    router.post('/:route', function(req, res){
+        var endpoint = req.params.route;
+        var qrcode = req.body.qrcode;
+        var modId = req.body.uappid;
+        var parameter = endpoint;
+        if (["breakfast", "lunch", "dinner"].indexOf(endpoint) < 0)
+            res.json({success: false, message: "Wrong endpoint entered"});
+        else {
+            User.findOne({appid: modId}).exec(function(err, output){
+                if (err){
+                    console.log(err);
+                    res.json({success: false, message: "An error occurred"});
+                } else {
+                    if (!output) {
+                        res.json({success: false, message: "No such moderator exists"});
                     } else {
-                        if (!outputUser){
-                            res.json({success: false, message: "No such user exists"});
-                        } else {
-                            // Removing that coupon from the coupons collection because that coupon is no longer availableto other users
-                            Coupon.findOneAndRemove({_id: coupon._id}).exec(function(err){
+                        if (output.isAdmin == false)
+                            res.json({success: false, message: "The moderator doesn't have admin privileges"});
+                        else {
+                            User.findOne({qrcode: qrcode}).exec(function(err, outputUser){
                                 if (err){
                                     console.log(err);
-                                    res.json({success: false, message: "Error occurred while activating the coupon"});
+                                    res.json({success: false, message: "An error occurred"});
                                 } else {
-                                    res.json({success: true, message: "Wifi coupon activated", coupon:outputUser.wifi});
+                                    if (!outputUser){
+                                        res.json({success: false, message: "No such user exists"});
+                                    } else {
+                                        if (outputUser.food.indexOf(parameter) < 0){
+                                            User.findOneAndUpdate({qrcode: qrcode}, {$push:{food:endpoint}}).exec(function(err){
+                                                if (err){
+                                                    console.log(err);
+                                                    res.json({success: false, message: "An error occurred"});
+                                                } else {
+                                                    res.json({success: true, message: "User has now eaten " + endpoint});
+                                                }
+                                            });
+
+                                        } else {
+                                            res.json({success: false, message: "The user has already consumed " + endpoint});
+                                        }
+                                    }
                                 }
                             });
                         }
                     }
-                });
-            }
-        });
+                }
+            });
+        }
     });
 
     return router; // Return the router object to server
