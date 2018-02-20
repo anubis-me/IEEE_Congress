@@ -1,5 +1,4 @@
 const express           = require('express');
-const path              = require('path');
 const requestLogger     = require('morgan');
 const bodyParser        = require('body-parser');
 const expressValidator  = require('express-validator');

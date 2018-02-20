@@ -5,7 +5,6 @@ var User            = require('../models/user');    // Import User Model
 var Coupon          = require('../models/wifi_coupon'); // Import Wifi coupon model
 var jwt             = require('jsonwebtoken');      // Import JWT Package
 var secret          = 'harrypotterfdrtynbvrt';      // Create custom secret for use in JWT
-var bcrypt          = require('bcrypt-nodejs');
 var nodemailer      = require('nodemailer');        // Import Nodemailer Package
 var sgTransport     = require('nodemailer-sendgrid-transport'); // Import Nodemailer Sengrid Transport Package
 
