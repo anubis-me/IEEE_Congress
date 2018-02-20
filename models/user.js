@@ -4,6 +4,7 @@
 const mongoose = require('mongoose');             // Import Mongoose Package
 const Schema   = mongoose.Schema;                 // Assign Mongoose Schema function
 const bcrypt   = require('bcrypt-nodejs');        // Import Bcrypt Package
+const rand     = require('unique-random')(10000, 99999); // Import unique-random package for generating randomly unique number
 const validate = require('mongoose-validator');   // Import Mongoose Validator Plugin
 const vali     = require('./validate');
 
@@ -17,7 +18,7 @@ const UserSchema = new Schema({
     phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
     permission      :    { type: Boolean, default: false },
     qrcode          :    { type: String },
-    food            :    [{type:String}],
+    food            :    [ {type:String} ],
     wifi            :    { type: String},
     isAdmin         :    { type: Boolean, default:false} // false, if the user is a normal user and true, if the user is admin
 });
@@ -29,6 +30,7 @@ UserSchema.pre('save', function(next){
             return next(err);
         }
         user.password = hash;
+        user.qrcode = rand().toString();
         next();
     });
 });
