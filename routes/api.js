@@ -29,7 +29,7 @@ module.exports = function(router) {
         user.email        = req.body.email;      // Save email from request to User object
         user.username     = req.body.username;   // Save name from request to User object
         user.phonenum     = req.body.phonenum;   // Save phone number from request to User object
-        user.qrcode       = jwt.sign({ username: user.username, email: user.email }, secret);
+        //user.qrcode       = jwt.sign({ username: user.username, email: user.email }, secret);
         // Check if request is valid and not empty or null
         if (req.body.username === null || req.body.username === '' || req.body.password === null || req.body.password === '' || req.body.email === null || req.body.email === '' || req.body.permission === null || req.body.permission === ''|| req.body.phonenum === null || req.body.phonenum === '') {
             res.json({ success: false, message: 'Ensure username, email, and password were provided' });
@@ -81,6 +81,7 @@ module.exports = function(router) {
                     res.json({ success: true, message: 'Account registered! ' }); // Send success message back
                 }
             });
+
         }
     });
 
@@ -131,7 +132,7 @@ module.exports = function(router) {
 
 
     router.post('/activate', function(req, res){
-        
+        var qrcode = req.bo
     });
 
     return router; // Return the router object to server

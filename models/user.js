@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     appid           :    { type: String },
     username        :    { type: String,  required: true },
     password        :    { type: String,  required: true, select: false },
-    email           :    { type: String,  required: true, validate: vali.emailValidator  },
+    email           :    { type: String,  required: true, validate: vali.emailValidator, unique: true },
     phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
     permission      :    { type: Boolean, default: false },
     qrcode          :    { type: String },
@@ -32,6 +32,13 @@ UserSchema.pre('save', function(next) {
         user.password = hash;   // Assign the hash to the user's password so it is saved in database encrypted
         next();                 // Exit Bcrypt function
     });
+});
+
+// Adding object ID of the user as the qr code
+UserSchema.post('save', function(next) {
+    const user = this;
+    user.qrcode = user._id;
+    next();
 });
 
 
