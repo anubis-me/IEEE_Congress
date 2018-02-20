@@ -16,7 +16,7 @@ const UserSchema = new Schema({
     email           :    { type: String,  required: true, validate: vali.emailValidator  },
     phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
     permission      :    { type: Boolean, default: false },
-    qrcode          :    { type: String,  required: true },
+    qrcode          :    { type: String },
     food            :    { type: String,  required: false },
     wifi            :    { type: String}
 });

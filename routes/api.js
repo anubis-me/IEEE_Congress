@@ -52,7 +52,9 @@ module.exports = function(router) {
                         // Check if duplication error exists
                         if (err.code == 11000) {
                             if (err.errmsg[61] == "e") {
-                                res.json({ success: false, message: 'That e-mail is already taken' }); // Display error if e-mail already taken
+                                res.json({success: false, message: 'That e-mail is already taken'}); // Display error if e-mail already taken
+                            } else {
+                                res.json({success: false, message: "A user already exists with same details"});
                             }
                         } else {
                             res.json({ success: false, message: err }); // Display any other error
@@ -127,6 +129,10 @@ module.exports = function(router) {
         });
     });
 
+
+    router.post('/activate', function(req, res){
+
+    });
 
     return router; // Return the router object to server
 };
