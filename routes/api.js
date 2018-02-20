@@ -131,7 +131,7 @@ module.exports = function(router) {
 
 
     router.post('/activate', function(req, res){
-
+        
     });
 
     return router; // Return the router object to server
