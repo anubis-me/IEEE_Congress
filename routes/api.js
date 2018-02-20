@@ -2,6 +2,7 @@
  * Created by abhi on 07-Feb-18.
  */
 var User            = require('../models/user');    // Import User Model
+var Coupon          = require('../models/wifi_coupon'); // Import Wifi coupon model
 var jwt             = require('jsonwebtoken');      // Import JWT Package
 var secret          = 'harrypotterfdrtynbvrt';      // Create custom secret for use in JWT
 var nodemailer      = require('nodemailer');        // Import Nodemailer Package
@@ -81,7 +82,6 @@ module.exports = function(router) {
                     res.json({ success: true, message: 'Account registered! ' }); // Send success message back
                 }
             });
-
         }
     });
 
@@ -130,9 +130,33 @@ module.exports = function(router) {
         });
     });
 
-
+    // Route for activating a wifi coupon for the user
+    // The coupon will be in the user object like => wifi: <couponCode> <couponPassword>
     router.post('/activate', function(req, res){
-        var qrcode = req.bo
+        var qrcode = req.body.qrcode;
+        Coupon.find({}).exec(function(err, coupons){
+            var coupon = coupons[0];
+            User.findOneAndUpdate({qrcode: qrcode}, {wifi: coupon.couponId + " " + coupon.couponPassword}).exec(function(err, outputUser){
+                if (err){
+                    console.log(err);
+                    res.json({success: false, message: "An error occurred"});
+                } else {
+                    if (!outputUser){
+                        res.json({success: false, message: "No such user exists"});
+                    } else {
+                        // Removing that coupon from the coupons collection because that coupon is no longer availableto other users
+                        Coupon.findOneAndRemove({_id: coupon._id}).exec(function(err){
+                            if (err){
+                                console.log(err);
+                                res.json({success: false, message: "Error occurred while activating the coupon"});
+                            } else {
+                                res.json({success: true, message: "Wifi coupon activated", coupon:outputUser.wifi});
+                            }
+                        });
+                    }
+                }
+            });
+        });
     });
 
     return router; // Return the router object to server
