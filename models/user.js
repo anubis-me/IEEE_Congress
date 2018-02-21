@@ -17,11 +17,10 @@ const UserSchema = new Schema({
     password        :    { type: String,  required: true, select: false },
     email           :    { type: String,  required: true, validate: vali.emailValidator, unique: true },
     phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
-    permission      :    { type: Boolean, default: false },
+    permission      :    { type: Boolean, default: false }, // false, if the user is a normal user and true, if the user is admin/ moderator
     qrcode          :    { type: String },
     food            :    [ {type:String} ],
-    wifi            :    { type: String},
-    isAdmin         :    { type: Boolean, default:false} // false, if the user is a normal user and true, if the user is admin/ moderator
+    wifi            :    { type: String}
 });
 
 // Hashing the password of the user before saving into the database

@@ -8,27 +8,33 @@ API documentation
 Post request
 
 For SignUp
-- /api/reguser : Data required (appid,username,email,password,phonenum)
+- POST /api/reguser : Data required (appid,username,email,password,phonenum)
 - Response : {success: true, message: 'Account registered!'}
 
 For login
-- /api/authenticate : Data required (email, password)
+- POST /api/authenticate : Data required (email, password)
 - Response : { success: true, message: 'User authenticated!', token: token }
-- token : username, email, phonenum, permission, qrcode, appid
+- token : username, email, phonenum, permission, qrcode, appid, food
+
+For Getting a user's details on the basis of his/her token saved
+- POST /api/getUserDetails : Data required (token)
+- token:  When the user logs in, save this token and whenever the user opens up the app again, use this saved token to get his/her details using this route
+- Response : { success: true, message: "Fetched the user details successfully", user: user}
+- user : {username: username, email: email, phonenum: phonenum, qrcode: qrcode, appid: appid, food: food}
 
 For activating wifi coupon
-- /api/activate : Data required (qrcode,uappid)
+- POST /api/activate : Data required (qrcode,uappid)
 
 For Timeline
-- /api/timeline : Data required (appid)
+- POST /api/timeline : Data required (appid)
 
 For speaker
-- /api/speaker : Data required (appid)
+- POST /api/speaker : Data required (appid)
 
 For Food Coupon
-- /api/breakfast : Data required (qrcode,uappid)
-- /api/lunch : Data required (qrcode,uappid)
-- /api/dinner : Data required (qrcode,uappid)
+- POST /api/breakfast : Data required (qrcode,uappid)
+- POST /api/lunch : Data required (qrcode,uappid)
+- POST /api/dinner : Data required (qrcode,uappid)
 
 appid: user app id   ,
 uappid: moderator app id

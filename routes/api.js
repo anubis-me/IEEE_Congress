@@ -30,8 +30,6 @@ module.exports = function(router) {
         user.email        = req.body.email;      // Save email from request to User object
         user.username     = req.body.username;   // Save name from request to User object
         user.phonenum     = req.body.phonenum;   // Save phone number from request to User object
-        user.qrcode       = req.body.appid;
-        //user.qrcode       = jwt.sign({ username: user.username, email: user.email }, secret);
         // Check if request is valid and not empty or null
         if (req.body.username === null || req.body.username === '' || req.body.password === null || req.body.password === '' || req.body.email === null || req.body.email === '' || req.body.permission === null || req.body.permission === ''|| req.body.phonenum === null || req.body.phonenum === '') {
             res.json({ success: false, message: 'Ensure username, email, and password were provided' });
@@ -123,7 +121,8 @@ module.exports = function(router) {
                         if (!validPassword) {
                             res.json({ success: false, message: 'Could not authenticate, password invalid ' }); // Password does not match password in database
                         } else {
-                            var token = jwt.sign({ username: user.username, email: user.email, phonenum:user.phonenum, permission:user.permission, qrcode:user.qrcode, appid:user.appid }, secret); // Create a token for activating account through e-mail
+                            var token = jwt.sign({ username: user.username, email: user.email, phonenum:user.phonenum, permission:user.permission, qrcode:user.qrcode, appid:user.appid, food: user.food}, secret); // Create a token for activating account through e-mail
+                            res.headers("Set-Cookie", "x-access-token"+token);
                             res.json({ success: true, message: 'User authenticated!', token: token });    // Return token in JSON object to controller
                         }
                     }
@@ -156,7 +155,6 @@ module.exports = function(router) {
         var qrcode = req.body.qrcode;
         var modId = req.body.uappid; //Moderator app id
 
-        // Checking the if the person who is activating the wifi coupon is moderator or not
         User.findOne({appid: modId}).exec(function(err, output){
             if (err){
                 console.log(err);
@@ -165,10 +163,13 @@ module.exports = function(router) {
                 if (!output){
                     res.json({success: false, message: "No such moderator exists"});
                 } else {
-                    if (output.isAdmin == false)
+
+                    // Checking the if the person who is activating the wifi coupon is moderator or not
+                    if (output.permission == false)
                         res.json({success: false, message: "The moderator doesn't have admin privileges"});
                     else {
                         Coupon.find({}).exec(function(err, coupons){
+                            // Checking if the coupons are available or not
                             if (len(coupons) <= 0){
                                 res.json({success: false, message: "No more wifi coupons available"});
                             } else {
@@ -199,6 +200,28 @@ module.exports = function(router) {
                 }
             }
         });
+    });
+
+    // Route for user to know his/her details (saved)
+    router.post('/getUserDetails', function(req, res){
+        var token  = req.body.token || req.headers['x-access-token'];
+        if (token){
+            jwt.verify(token, secret, function(err, decoded){
+                if (err){
+                    console.log(err);
+                    res.json({success: false, message: "An error occurred while fetching the details of the user"});
+                } else {
+                    if (decoded){
+                        res.json({success: true, message: "User details fetched successfully", user: decoded});
+                    } else {
+                        res.json({success: false, message: "No details found"});
+                    }
+                }
+            });
+        } else {
+            res.json({success: false, message: "No token provided"});
+        }
+
     });
 
     //Routes for user to take meals
