@@ -221,6 +221,7 @@ module.exports = function(router) {
                     if (!output) {
                         res.json({success: false, message: "No such moderator exists"});
                     } else {
+                        // Checking if the user allotting the meal is a moderator or not
                         if (output.isAdmin == false)
                             res.json({success: false, message: "The moderator doesn't have admin privileges"});
                         else {
@@ -232,6 +233,7 @@ module.exports = function(router) {
                                     if (!outputUser){
                                         res.json({success: false, message: "No such user exists"});
                                     } else {
+                                        // Checking if the user has already consumed the meal or not
                                         if (outputUser.food.indexOf(parameter) < 0){
                                             User.findOneAndUpdate({qrcode: qrcode}, {$push:{food:endpoint}}).exec(function(err){
                                                 if (err){

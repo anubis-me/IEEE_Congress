@@ -10,7 +10,7 @@ const vali     = require('./validate');
 // User Mongoose Schema
 const speakerSchema = new Schema({
     name            :    { type: String,  required: true, validate: vali.nameValidator },
-    email           :    { type: String,  required: true, validate: vali.emailValidator   , unique: true },
+    email           :    { type: String,  required: true, validate: vali.emailValidator, unique: true },
     phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
     description     :    { type: String,  required: true },
     domain          :    { type: String,  required: true },
