@@ -123,7 +123,7 @@ module.exports = function(router) {
                         } else {
                             var token = jwt.sign({ username: user.username, email: user.email, phonenum:user.phonenum, permission:user.permission, qrcode:user.qrcode, appid:user.appid, food: user.food}, secret); // Create a token for activating account through e-mail
                             res.headers("Set-Cookie", "x-access-token"+token);
-                            res.json({ success: true, message: 'User authenticated!', token: token });    // Return token in JSON object to controller
+                            res.json({ success: true, message: 'User authenticated!', token: token, user: user });    // Return token in JSON object to controller
                         }
                     }
                 }

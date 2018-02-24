@@ -20,6 +20,8 @@ const UserSchema = new Schema({
     permission      :    { type: Boolean, default: false }, // false, if the user is a normal user and true, if the user is admin/ moderator
     qrcode          :    { type: String },
     food            :    [ {type:String} ],
+    paid            :    {type: Boolean, default: false},
+    eventType       :    {type: Number},
     wifi            :    { type: String}
 });
 

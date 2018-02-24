@@ -13,7 +13,7 @@ For SignUp
 
 For login
 - POST /api/authenticate : Data required (email, password)
-- Response : { success: true, message: 'User authenticated!', token: token }
+- Response : { success: true, message: 'User authenticated!', token: token, user: user }
 - token : username, email, phonenum, permission, qrcode, appid, food
 
 For Getting a user's details on the basis of his/her token saved
