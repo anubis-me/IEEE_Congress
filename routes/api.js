@@ -165,6 +165,7 @@ module.exports = function(router) {
                 } else {
 
                     // Checking the if the person who is activating the wifi coupon is moderator or not
+                    //TODO: You could have searched just for mods when you used findOne.
                     if (output.permission == false)
                         res.json({success: false, message: "The moderator doesn't have admin privileges"});
                     else {
@@ -183,6 +184,8 @@ module.exports = function(router) {
                                             res.json({success: false, message: "No such user exists"});
                                         } else {
                                             // Removing that coupon from the coupons collection because that coupon is no longer availableto other users
+                                            // TODO: Don't remove the coupon from the db. Just set activated: true in db.
+                                            // TODO: You do not have to fetch for the same coupon again. just set coupon.activated = true; coupon.save().exec....
                                             Coupon.findOneAndRemove({_id: coupon._id}).exec(function(err){
                                                 if (err){
                                                     console.log(err);
@@ -203,6 +206,7 @@ module.exports = function(router) {
     });
 
     // Route for user to know his/her details (saved)
+    //TODO: WTF is this route for. Use findOne instead of decoding jwt. jwt is usually outdated.
     router.post('/getUserDetails', function(req, res){
         var token  = req.body.token || req.headers['x-access-token'];
         if (token){
