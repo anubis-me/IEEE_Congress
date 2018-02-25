@@ -6,7 +6,9 @@ const compression       = require('compression');
 const helmet            = require('helmet');
 const mongoose          = require('mongoose');
 const router            = express.Router();                 // Invoke the Express Router
-const appRoutes         = require('./routes/api')(router);  // Import the application end points/API
+const appRoutes         = require('./routes/participantRoutes')(router);  // Import the application end points/API
+const authenticateRoutes = require('./routes/authenticationRoutes')(router); // Importing the routes for authentication
+const adminRoutes       = require('./routes/adminRoutes')(router); // Importing the routes for admin
 const port              = process.env.PORT || 4000;         // Set default port or assign a port in environment
 const app               = express();
 
@@ -26,7 +28,9 @@ mongoose.connect(process.env.DB_HOST, function(err) {
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(expressValidator());
         app.use(compression());
-        app.use('/api', appRoutes);
+        app.use('/participant', appRoutes);
+        app.use('/authenticate', authenticateRoutes);
+        app.use('/admin', adminRoutes);
 
         // Start Server
         app.listen(port, function() {

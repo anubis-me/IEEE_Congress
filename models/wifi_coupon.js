@@ -8,6 +8,10 @@ var couponSchema = new mongoose.Schema({
     couponPassword:{
         type: String,
         required: true
+    },
+    activated: {
+        type: Boolean,
+        default: false
     }
 });
 
