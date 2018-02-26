@@ -10,7 +10,7 @@ const appRoutes         = require('./routes/participantRoutes')(router);  // Imp
 const regRoutes         = require('./routes/registerationapi')(router);
 const authenticateRoutes = require('./routes/authenticationRoutes')(router); // Importing the routes for authentication
 const adminRoutes       = require('./routes/adminRoutes')(router); // Importing the routes for admin
-const port              = process.env.PORT || 4000;         // Set default port or assign a port in environment
+const port              = process.env.PORT || 8000;         // Set default port or assign a port in environment
 const app               = express();
 
 //require('dotenv').config();
