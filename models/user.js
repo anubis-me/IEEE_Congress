@@ -51,6 +51,7 @@ UserSchema.pre('save', function(next){
         }
         user.password = hash;
         var qrcode = rand().toString();
+        user.qrcode = qrcode;
 
         // Performing a check whether the randomly generated qrcode belongs to some other user or not
         userModel.findOne({qrcode: qrcode}).exec(function(err, outputUser){
