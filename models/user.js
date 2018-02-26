@@ -50,11 +50,9 @@ UserSchema.pre('save', function(next){
             return next(err);
         }
         user.password = hash;
-        //var qrcode = rand().toString();
-        var qrcode = middlewares.generateUniqueQrCode(userModel);
-        user.qrcode = qrcode;
+        var qrcode = rand().toString();
 
-        /*// Performing a check whether the randomly generated qrcode belongs to some other user or not
+        // Performing a check whether the randomly generated qrcode belongs to some other user or not
         userModel.findOne({qrcode: qrcode}).exec(function(err, outputUser){
             if (err)
                 return next(err);
@@ -66,7 +64,6 @@ UserSchema.pre('save', function(next){
                 }
             }
         });
-        */
         next();
     });
 });

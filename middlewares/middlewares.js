@@ -4,7 +4,6 @@
 var User            = require('../models/user');    // Import User Model
 var secret          = 'harrypotterfdrtynbvrt';
 var jwt             = require('jsonwebtoken');
-var rand     = require('unique-random')(10000, 99999); // Import unique-random package for generating randomly unique number
 
 function checkAdmin(req, res, next){
     var token = req.headers['x-access-token'];
@@ -63,18 +62,4 @@ function checkParticipant(req, res, next){
     }
 }
 
-function generateUniqueQrCode(userModel){
-    var qr = rand.toString();
-    userModel.findOne({qrcode: qr}).exec(function(err, outputUser){
-        if (err)
-            return generateUniqueQrCode(userModel);
-        else {
-            if (outputUser)
-                return generateUniqueQrCode(userModel);
-            else
-                return qr;
-        }
-    });
-}
-
-module.exports = {checkAdmin: checkAdmin, checkParticipant: checkParticipant, generateUniqueQrCode: generateUniqueQrCode};
+module.exports = {checkAdmin: checkAdmin, checkParticipant: checkParticipant};
