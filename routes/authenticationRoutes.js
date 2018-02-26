@@ -6,7 +6,6 @@ var jwt             = require('jsonwebtoken');      // Import JWT Package
 var secret          = 'harrypotterfdrtynbvrt';      // Create custom secret for use in JWT
 var nodemailer      = require('nodemailer');        // Import Nodemailer Package
 var sgTransport     = require('nodemailer-sendgrid-transport'); // Import Nodemailer Sengrid Transport Package
-var middlewares     = require('../middlewares/middlewares');
 var router = require('express').Router();
 
 
@@ -129,7 +128,7 @@ router.post('/authenticate', function(req, res) {
                 else {
                     var validPassword = user.comparePassword(req.body.password); // Check if password matches password provided by user
                     if (!validPassword) {
-                        res.json({ success: false, message: 'Could not authenticate, password invalid ' }); // Password does not match password in database
+                        res.json({ success: false, message: 'Could not authenticate, password invalid' }); // Password does not match password in database
                     } else {
                         var token = jwt.sign({ username: user.username, email: user.email, phonenum:user.phonenum, permission:user.permission, qrcode:user.qrcode, appid:user.appid, food: user.food}, secret); // Create a token for activating account through e-mail
                         res.header("Set-Cookie", "x-access-token="+token);
