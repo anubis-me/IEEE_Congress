@@ -1,7 +1,7 @@
 /**
  * Created by abhi on 26-Feb-18.
  */
-var Register        = require('../models/registrationdetail');    // Import User Model
+var Register        = require('../models/registrationdetails');    // Import User Model
 
 module.exports = function(router) {
 
