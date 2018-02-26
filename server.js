@@ -13,7 +13,7 @@ const adminRoutes       = require('./routes/adminRoutes')(router); // Importing 
 const port              = process.env.PORT || 4000;         // Set default port or assign a port in environment
 const app               = express();
 
-require('dotenv').config();
+//require('dotenv').config();
 
 mongoose.connect(process.env.DB_HOST, function(err) {
 
