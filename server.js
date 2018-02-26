@@ -22,23 +22,24 @@ mongoose.connect(process.env.DB_HOST, function(err) {
     }
     else {
         console.log('Successfully connected to DB'); // Log to console if able to connect to database
-
-        app.use(requestLogger('short'));
-        app.use(helmet());
-        app.use(bodyParser.json());
-        app.use(bodyParser.urlencoded({extended: true}));
-        app.use(expressValidator());
-        app.use(compression());
-        app.use('/participant', appRoutes);
-        app.use('/authenticate', authenticateRoutes);
-        app.use('/admin', adminRoutes);
-        app.use('/reg', regRoutes);
-       
-
-        // Start Server
-        app.listen(port, function() {
-            console.log('Running the server on port ' + port); // Listen on configured port
-        });
     }
+});
+
+
+app.use(requestLogger('short'));
+app.use(helmet());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(expressValidator());
+app.use(compression());
+app.use('/participant', appRoutes);
+app.use('/authenticate', authenticateRoutes);
+app.use('/admin', adminRoutes);
+app.use('/reg', regRoutes);
+
+
+// Start Server
+app.listen(port, function() {
+    console.log('Running the server on port ' + port); // Listen on configured port
 });
 
