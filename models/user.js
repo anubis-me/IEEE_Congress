@@ -6,7 +6,7 @@ const Schema   = mongoose.Schema;                 // Assign Mongoose Schema func
 const bcrypt   = require('bcrypt-nodejs');        // Import Bcrypt Package
 const rand     = require('unique-random')(10000, 99999); // Import unique-random package for generating randomly unique number
 const vali     = require('./validate');
-
+const middlewares = require('../middlewares/middlewares');
 
 // User Mongoose Schema
 const UserSchema = new Schema({
@@ -50,10 +50,11 @@ UserSchema.pre('save', function(next){
             return next(err);
         }
         user.password = hash;
-        var qrcode = rand().toString();
+        //var qrcode = rand().toString();
+        var qrcode = middlewares.generateUniqueQrCode(userModel);
         user.qrcode = qrcode;
 
-        // Performing a check whether the randomly generated qrcode belongs to some other user or not
+        /*// Performing a check whether the randomly generated qrcode belongs to some other user or not
         userModel.findOne({qrcode: qrcode}).exec(function(err, outputUser){
             if (err)
                 return next(err);
@@ -65,6 +66,7 @@ UserSchema.pre('save', function(next){
                 }
             }
         });
+        */
         next();
     });
 });
