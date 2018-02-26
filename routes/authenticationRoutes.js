@@ -40,7 +40,7 @@ module.exports = function(router){
         user.bansw_1      = req.body.bansw_1;
         user.bansw_2      = req.body.bansw_2;
         // Check if request is valid and not empty or null
-        if (req.body.username === null || req.body.username === '' || req.body.password === null || req.body.password === '' || req.body.email === null || req.body.email === '' || req.body.permission === null || req.body.permission === ''|| req.body.phonenum === null || req.body.phonenum === '') {
+        if (req.body.username === null || req.body.username === '' || req.body.password === null || req.body.password === '' || req.body.email === null || req.body.email === '' || req.body.phonenum === null || req.body.phonenum === '') {
             res.json({ success: false, message: 'Ensure username, email, and password were provided' });
         } else {
             // Saving the new user to database
