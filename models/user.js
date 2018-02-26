@@ -20,10 +20,10 @@ const UserSchema = new Schema({
     phonenum        :    { type: String,  required: true, validate: vali.phoneValidator },
     section         :    { type: String },
     paid_mem        :    { type: Boolean },
-    mem_num         :    { type: String },
-    past_exp        :    { type: String },
-    attending_As    :    { type: String },
-    interested_in   :    { type: String },
+    mem_num         :    { type: String, default: "No membership number" },
+    past_exp        :    { type: String, default: "No past experience" },
+    attending_As    :    { type: String, enum: ["student", "young professional", "professional"] },
+    interested_in   :    [{ type: String, enum: ["ai", "android", "iot", "congress"]}], // this is an array of events the user is interested in
     bansw_1         :    { type: String },
     bansw_2         :    { type: String },
 
@@ -33,7 +33,7 @@ const UserSchema = new Schema({
     food            :    [{type:String}],
     eventType       :    { type: Number },
     wifi            :    { type: String },
-    paidFor         :    [{type:String, enum: ["ai", "android", "iot", "congress"]}]
+    paidFor         :    [{type:String, enum: ["ai", "android", "iot", "congress"]}] // this is the array of events the user has paid for
 
 });
 
