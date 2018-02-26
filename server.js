@@ -7,13 +7,12 @@ const helmet            = require('helmet');
 const mongoose          = require('mongoose');
 const router            = express.Router();                 // Invoke the Express Router
 const appRoutes         = require('./routes/participantRoutes')(router);  // Import the application end points/API
-const regRoutes         = require('./routes/registerationapi')(router);
 const authenticateRoutes = require('./routes/authenticationRoutes')(router); // Importing the routes for authentication
 const adminRoutes       = require('./routes/adminRoutes')(router); // Importing the routes for admin
 const port              = process.env.PORT || 8000;         // Set default port or assign a port in environment
 const app               = express();
 
-//require('dotenv').config();
+require('dotenv').config();
 
 mongoose.connect(process.env.DB_HOST, function(err) {
 
@@ -35,7 +34,6 @@ app.use(compression());
 app.use('/participant', appRoutes);
 app.use('/authenticate', authenticateRoutes);
 app.use('/admin', adminRoutes);
-app.use('/reg', regRoutes);
 
 
 // Start Server

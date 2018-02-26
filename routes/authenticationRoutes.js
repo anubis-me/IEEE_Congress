@@ -30,6 +30,15 @@ module.exports = function(router){
         user.email        = req.body.email;      // Save email from request to User object
         user.username     = req.body.username;   // Save name from request to User object
         user.phonenum     = req.body.phonenum;   // Save phone number from request to User object
+        user.institute    = req.body.institute;
+        user.section      = req.body.section;
+        user.paid_mem     = req.body.paid_mem;
+        user.mem_num      = req.body.mem_num;
+        user.past_exp     = req.body.past_exp;
+        user.attending_As = req.body.attending_As;
+        user.interested_in= req.body.interested_in;
+        user.bansw_1      = req.body.bansw_1;
+        user.bansw_2      = req.body.bansw_2;
         // Check if request is valid and not empty or null
         if (req.body.username === null || req.body.username === '' || req.body.password === null || req.body.password === '' || req.body.email === null || req.body.email === '' || req.body.permission === null || req.body.permission === ''|| req.body.phonenum === null || req.body.phonenum === '') {
             res.json({ success: false, message: 'Ensure username, email, and password were provided' });
@@ -122,7 +131,7 @@ module.exports = function(router){
                             res.json({ success: false, message: 'Could not authenticate, password invalid ' }); // Password does not match password in database
                         } else {
                             var token = jwt.sign({ username: user.username, email: user.email, phonenum:user.phonenum, permission:user.permission, qrcode:user.qrcode, appid:user.appid, food: user.food}, secret); // Create a token for activating account through e-mail
-                            res.headers("Set-Cookie", "x-access-token"+token);
+                            res.headers("Set-Cookie", "x-access-token="+token);
                             res.json({ success: true, message: 'User authenticated!', token: token, user: user });    // Return token in JSON object to controller
                         }
                     }
