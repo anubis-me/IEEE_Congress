@@ -5,8 +5,7 @@ var User            = require('../models/user');    // Import User Model
 var jwt             = require('jsonwebtoken');      // Import JWT Package
 var secret          = 'harrypotterfdrtynbvrt';      // Create custom secret for use in JWT
 var middlewares     = require('../middlewares/middlewares');
-
-module.exports = function(router) {
+var router          = require('express').Router();
 
     router.use(function(req, res, next){
         middlewares.checkParticipant(req, res, next);
@@ -25,5 +24,4 @@ module.exports = function(router) {
         });
     });
 
-    return router; // Return the router object to server
-};
+    module.exports = router;

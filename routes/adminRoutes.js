@@ -4,8 +4,7 @@
 var User            = require('../models/user');    // Import User Model
 var Coupon          = require('../models/wifi_coupon'); // Import Wifi coupon model
 var middlewares     = require('../middlewares/middlewares'); // Importing the middlewares
-
-module.exports = function(router){
+var router          = require('express').Router();
 
     router.use(function(req, res, next){
         middlewares.checkAdmin(req, res, next);
@@ -170,6 +169,5 @@ module.exports = function(router){
         }
     });
 
-    return router;
-};
+    module.exports = router;
 

@@ -4,7 +4,6 @@
 const mongoose = require('mongoose');             // Import Mongoose Package
 const Schema   = mongoose.Schema;                 // Assign Mongoose Schema function
 const bcrypt   = require('bcrypt-nodejs');        // Import Bcrypt Package
-const User     = require('./user');
 const rand     = require('unique-random')(10000, 99999); // Import unique-random package for generating randomly unique number
 const validate = require('mongoose-validator');   // Import Mongoose Validator Plugin
 const vali     = require('./validate');
@@ -37,16 +36,26 @@ const UserSchema = new Schema({
 
 });
 
+// Method to compare passwords in API (when user logs in)
+UserSchema.methods.comparePassword = function(password) {
+    return bcrypt.compareSync(password, this.password); // Returns true if password matches, false if doesn't
+};
+
+
+var userModel =  mongoose.model('User', UserSchema);
+
 // Hashing the password of the user before saving into the database
 UserSchema.pre('save', function(next){
+    var user = this;
     bcrypt.hash(user.password, null, null, function(err, hash){
         if (err){
             return next(err);
         }
         user.password = hash;
         var qrcode = rand().toString();
+        user.qrcode = qrcode;
         // Performing a check whether the randomly generated qrcode belongs to some other user or not
-        User.findOne({qrcode: qrcode}).exec(function(err, outputUser){
+        userModel.findOne({qrcode: qrcode}).exec(function(err, outputUser){
             if (err)
                 return next(err);
             else {
@@ -61,9 +70,5 @@ UserSchema.pre('save', function(next){
     });
 });
 
-// Method to compare passwords in API (when user logs in)
-UserSchema.methods.comparePassword = function(password) {
-    return bcrypt.compareSync(password, this.password); // Returns true if password matches, false if doesn't
-};
 
 module.exports = mongoose.model('User', UserSchema, "users"); // Export User Model for us in API
