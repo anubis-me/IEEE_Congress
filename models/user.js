@@ -24,7 +24,7 @@ const UserSchema = new Schema({
     bansw_1         :    { type: String },
     bansw_2         :    { type: String },
 
-    password        :    { type: String, required: true, select: false },
+    password        :    { type: String, required: true},
     permission      :    { type: Boolean, default: false }, // false, if the user is a normal user and true, if the user is admin/ moderator
     qrcode          :    { type: String },
     food            :    [{type:String}],

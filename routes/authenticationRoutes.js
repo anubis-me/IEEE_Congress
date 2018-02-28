@@ -97,7 +97,7 @@ router.post('/reguser', function(req, res) {
 // Route for user logins
 router.post('/authenticate', function(req, res) {
     const loginUser = (req.body.email).toLowerCase(); // Ensure username is checked in lowercase against database
-    User.findOne({ email: loginUser }).select('email password username qrcode phonenum permission appid').exec(function(err, user) {
+    User.findOne({ email: loginUser }).exec(function(err, user) {
         if (err) {
             // Create an e-mail object that contains the error. Set to automatically send it to myself for troubleshooting.
             var email = {
